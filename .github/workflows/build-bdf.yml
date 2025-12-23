@@ -5,21 +5,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install Dependencies
         run: npm install
 
       - name: Build BDF Version
+        # Still using your custom global variable name
         run: npx gulp build --modules=modules.json --globalVarName=bdfpbjs
 
       - name: Upload Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bdf-prebid-build
           path: build/dist/prebid.js
