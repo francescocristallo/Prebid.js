@@ -4,10 +4,9 @@
   "sharethroughBidAdapter",
   "schain",
   "userId",
-  "sharedId",
-  "id5Id",
-  "gdprEnforcement",
-  "consentManagement",
+  "sharedIdSystem",
+  "id5IdSystem",
+  "consentManagementTcf",
   "consentManagementUsp",
   "currency",
   "priceFloors"
