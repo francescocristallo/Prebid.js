@@ -1,0 +1,25 @@
+name: Build BDF Prebid
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build BDF Version
+        run: npx gulp build --modules=modules.json --globalVarName=bdfpbjs
+
+      - name: Upload Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: bdf-prebid-build
+          path: build/dist/prebid.js
