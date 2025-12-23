@@ -16,8 +16,11 @@ jobs:
         run: npm install
 
       - name: Build BDF Version
-        # Still using your custom global variable name
         run: npx gulp build --modules=modules.json --globalVarName=bdfpbjs
+
+      - name: Force Rename Global Variable
+        # This manually patches the file to ensure 'bdfpbjs' is used
+        run: sed -i 's/pbGlobal:"pbjs"/pbGlobal:"bdfpbjs"/g' build/dist/prebid.js
 
       - name: Upload Build
         uses: actions/upload-artifact@v4
