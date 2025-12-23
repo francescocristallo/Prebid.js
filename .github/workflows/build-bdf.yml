@@ -16,11 +16,17 @@ jobs:
         run: npm install
 
       - name: Build BDF Version
-        run: npx gulp build --modules=modules.json --globalVarName=bdfpbjs
+        # We build the standard version first
+        run: npx gulp build --modules=modules.json
 
-      - name: Force Rename Global Variable
-        # This manually patches the file to ensure 'bdfpbjs' is used
-        run: sed -i 's/pbGlobal:"pbjs"/pbGlobal:"bdfpbjs"/g' build/dist/prebid.js
+      - name: Rebrand to bdfpbjs
+        # 1. Replace the internal config setting
+        # 2. Replace the window check at the top of the file
+        # 3. Replace the "pbjs.queue" references
+        run: |
+          sed -i 's/pbGlobal:"pbjs"/pbGlobal:"bdfpbjs"/g' build/dist/prebid.js
+          sed -i 's/window.pbjs/window.bdfpbjs/g' build/dist/prebid.js
+          sed -i 's/"pbjs"/"bdfpbjs"/g' build/dist/prebid.js
 
       - name: Upload Build
         uses: actions/upload-artifact@v4
