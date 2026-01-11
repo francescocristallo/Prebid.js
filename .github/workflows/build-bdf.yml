@@ -15,18 +15,33 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Generate modules.json
+        run: |
+          echo '[
+            "rubiconBidAdapter",
+            "sovrnBidAdapter",
+            "sharethroughBidAdapter",
+            "schain",
+            "userId",
+            "sharedIdSystem",
+            "id5IdSystem",
+            "uid2IdSystem",
+            "consentManagementTcf",
+            "consentManagementUsp",
+            "currency",
+            "priceFloors"
+          ]' > modules.json
+
       - name: Build BDF Version
-        # We build the standard version first
         run: npx gulp build --modules=modules.json
 
       - name: Rebrand to bdfpbjs
-        # 1. Replace the internal config setting
-        # 2. Replace the window check at the top of the file
-        # 3. Replace the "pbjs.queue" references
+        # REFINED LOGIC: Safely rebrands global variables without breaking internal strings
         run: |
-          sed -i 's/pbGlobal:"pbjs"/pbGlobal:"bdfpbjs"/g' build/dist/prebid.js
+          sed -i 's/pbGlobal: *"pbjs"/pbGlobal:"bdfpbjs"/g' build/dist/prebid.js
           sed -i 's/window.pbjs/window.bdfpbjs/g' build/dist/prebid.js
-          sed -i 's/"pbjs"/"bdfpbjs"/g' build/dist/prebid.js
+          sed -i "s/window\['pbjs'\]/window['bdfpbjs']/g" build/dist/prebid.js
+          sed -i 's/window\["pbjs"\]/window["bdfpbjs"]/g' build/dist/prebid.js
 
       - name: Upload Build
         uses: actions/upload-artifact@v4
